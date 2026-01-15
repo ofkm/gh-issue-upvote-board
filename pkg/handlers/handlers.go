@@ -12,8 +12,8 @@ import (
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
-	"github.com/kmendell/issue-upvote-board/internal/config"
-	"github.com/kmendell/issue-upvote-board/internal/github"
+	"go.ofkm.dev/gh-issue-upvote-board/pkg/config"
+	"go.ofkm.dev/gh-issue-upvote-board/pkg/github"
 )
 
 // Handler holds dependencies for HTTP handlers

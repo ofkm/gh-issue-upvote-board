@@ -7,9 +7,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kmendell/issue-upvote-board/internal/config"
-	"github.com/kmendell/issue-upvote-board/internal/github"
-	"github.com/kmendell/issue-upvote-board/internal/handlers"
+	"go.ofkm.dev/gh-issue-upvote-board/pkg/config"
+	"go.ofkm.dev/gh-issue-upvote-board/pkg/github"
+	"go.ofkm.dev/gh-issue-upvote-board/pkg/handlers"
 )
 
 //go:embed static/*
@@ -54,7 +54,7 @@ func main() {
 
 	// Set up routes
 	mux := http.NewServeMux()
-	
+
 	// Serve static files from embedded FS
 	staticSub, err := fs.Sub(staticFS, "static")
 	if err != nil {
@@ -77,7 +77,7 @@ func main() {
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	log.Printf("Server starting on http://localhost%s", addr)
 	log.Printf("Press Ctrl+C to stop")
-	
+
 	if err := http.ListenAndServe(addr, mux); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}

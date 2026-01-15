@@ -1,70 +1,70 @@
 @font-face {
-    font-family: 'Geist';
-    src: url('/static/Geist-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: "Geist";
+  src: url("/static/Geist-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Geist Mono';
-    src: url('/static/GeistMono-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: "Geist Mono";
+  src: url("/static/GeistMono-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 :root,
 :root[data-theme="light"] {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --secondary: #64748b;
-    --success: #10b981;
-    --danger: #ef4444;
-    --bg: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
-    --text: #0f172a;
-    --text-secondary: #64748b;
-    --text-tertiary: #94a3b8;
-    --border: #e2e8f0;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --radius: 8px;
-    --radius-lg: 12px;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #64748b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius: 8px;
+  --radius-lg: 12px;
 }
 
 :root[data-theme="dark"] {
-    --primary: #0070f3;
-    --primary-hover: #0761d1;
-    --secondary: #666666;
-    --success: #0070f3;
-    --danger: #ee0000;
-    --bg: #000000;
-    --bg-secondary: #0a0a0a;
-    --bg-tertiary: #1a1a1a;
-    --text: #ededed;
-    --text-secondary: #888888;
-    --text-tertiary: #666666;
-    --border: #1a1a1a;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-    --radius: 8px;
-    --radius-lg: 12px;
+  --primary: #0070f3;
+  --primary-hover: #0761d1;
+  --secondary: #666666;
+  --success: #0070f3;
+  --danger: #ee0000;
+  --bg: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #1a1a1a;
+  --text: #ededed;
+  --text-secondary: #888888;
+  --text-tertiary: #666666;
+  --border: #1a1a1a;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --radius: 8px;
+  --radius-lg: 12px;
 }
 
 :root[data-theme="dark"] .state-open {
-    background: rgba(0, 112, 243, 0.1);
-    color: #52a8ff;
-    border: 1px solid rgba(0, 112, 243, 0.3);
+  background: rgba(0, 112, 243, 0.1);
+  color: #52a8ff;
+  border: 1px solid rgba(0, 112, 243, 0.3);
 }
 
 :root[data-theme="dark"] .state-closed {
-    background: rgba(238, 0, 0, 0.1);
-    color: #ff6b6b;
-    border: 1px solid rgba(238, 0, 0, 0.3);
+  background: rgba(238, 0, 0, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(238, 0, 0, 0.3);
 }
 
 * {
@@ -74,12 +74,19 @@
 }
 
 body {
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Geist",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   background: var(--bg-secondary);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 body.modal-open {
@@ -161,7 +168,6 @@ body.modal-open {
 
 :root[data-theme="dark"] .theme-toggle .moon-icon {
   display: block;
-}
   color: var(--text);
   margin-bottom: 0.25rem;
 }
@@ -438,16 +444,36 @@ body.modal-open {
   animation: fadeIn 0.35s ease-in backwards;
 }
 
-.view-card .issue-item:nth-child(1) { animation-delay: 0.03s; }
-.view-card .issue-item:nth-child(2) { animation-delay: 0.06s; }
-.view-card .issue-item:nth-child(3) { animation-delay: 0.09s; }
-.view-card .issue-item:nth-child(4) { animation-delay: 0.12s; }
-.view-card .issue-item:nth-child(5) { animation-delay: 0.15s; }
-.view-card .issue-item:nth-child(6) { animation-delay: 0.18s; }
-.view-card .issue-item:nth-child(7) { animation-delay: 0.21s; }
-.view-card .issue-item:nth-child(8) { animation-delay: 0.24s; }
-.view-card .issue-item:nth-child(9) { animation-delay: 0.27s; }
-.view-card .issue-item:nth-child(n+10) { animation-delay: 0.3s; }
+.view-card .issue-item:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.view-card .issue-item:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.view-card .issue-item:nth-child(3) {
+  animation-delay: 0.09s;
+}
+.view-card .issue-item:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.view-card .issue-item:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.view-card .issue-item:nth-child(6) {
+  animation-delay: 0.18s;
+}
+.view-card .issue-item:nth-child(7) {
+  animation-delay: 0.21s;
+}
+.view-card .issue-item:nth-child(8) {
+  animation-delay: 0.24s;
+}
+.view-card .issue-item:nth-child(9) {
+  animation-delay: 0.27s;
+}
+.view-card .issue-item:nth-child(n + 10) {
+  animation-delay: 0.3s;
+}
 
 .view-card .issue-item:hover {
   box-shadow: var(--shadow-md);
@@ -474,16 +500,36 @@ body.modal-open {
   animation: fadeIn 0.35s ease-in backwards;
 }
 
-.view-list .issue-item:nth-child(1) { animation-delay: 0.03s; }
-.view-list .issue-item:nth-child(2) { animation-delay: 0.06s; }
-.view-list .issue-item:nth-child(3) { animation-delay: 0.09s; }
-.view-list .issue-item:nth-child(4) { animation-delay: 0.12s; }
-.view-list .issue-item:nth-child(5) { animation-delay: 0.15s; }
-.view-list .issue-item:nth-child(6) { animation-delay: 0.18s; }
-.view-list .issue-item:nth-child(7) { animation-delay: 0.21s; }
-.view-list .issue-item:nth-child(8) { animation-delay: 0.24s; }
-.view-list .issue-item:nth-child(9) { animation-delay: 0.27s; }
-.view-list .issue-item:nth-child(n+10) { animation-delay: 0.3s; }
+.view-list .issue-item:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.view-list .issue-item:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.view-list .issue-item:nth-child(3) {
+  animation-delay: 0.09s;
+}
+.view-list .issue-item:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.view-list .issue-item:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.view-list .issue-item:nth-child(6) {
+  animation-delay: 0.18s;
+}
+.view-list .issue-item:nth-child(7) {
+  animation-delay: 0.21s;
+}
+.view-list .issue-item:nth-child(8) {
+  animation-delay: 0.24s;
+}
+.view-list .issue-item:nth-child(9) {
+  animation-delay: 0.27s;
+}
+.view-list .issue-item:nth-child(n + 10) {
+  animation-delay: 0.3s;
+}
 
 .view-list .issue-item:hover {
   border-color: var(--primary);
@@ -549,7 +595,7 @@ body.modal-open {
 }
 
 .issue-number {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   color: var(--text-tertiary);
   font-size: 0.875rem;
   font-weight: 500;
