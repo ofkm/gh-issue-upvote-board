@@ -1,0 +1,13 @@
+services:
+  issue-upvote-board:
+    image: ghcr.io/ofkm/gh-issue-upvote-board:latest
+    ports:
+      - "8080:8080"
+    environment:
+      GITHUB_OWNER: ${GITHUB_OWNER:-getarcaneapp}
+      GITHUB_REPO: ${GITHUB_REPO:-arcane}
+      GITHUB_LABEL: ${GITHUB_LABEL:-needs more upvotes}
+      GITHUB_STATE: ${GITHUB_STATE:-open}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      PORT: ${PORT:-8080}
+    restart: unless-stopped
