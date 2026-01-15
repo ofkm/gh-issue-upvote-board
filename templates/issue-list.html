@@ -1,47 +1,41 @@
 <div class="issues-section">
-  <div class="issues-header">
-    <div class="header-left">
-      <h2>{{.TotalCount}} Issues{{if gt .TotalPages 1}} (Page {{.CurrentPage}} of {{.TotalPages}}){{end}}</h2>
-    </div>
-    <div class="header-right">
+  <div class="issues-toolbar">
+    <div class="toolbar-stats"><strong>{{.TotalCount}}</strong> issues</div>
+
+    <div class="toolbar-actions">
       {{if gt .TotalPages 1}}
       <div class="pagination">
-        {{if .HasPrev}}
         <button
           class="pagination-btn"
+          {{if
+          .HasPrev}}
           hx-get="/issues?owner={{$.Owner}}&repo={{$.Repo}}&label={{$.Label}}&state={{$.State}}&page={{sub .CurrentPage 1}}&per_page={{.PerPage}}"
           hx-target=".issues-section"
-          hx-swap="outerHTML swap:0.2s settle:0.2s"
-          hx-indicator="#loading"
+          hx-swap="outerHTML swap:0.2s"
+          {{else}}disabled{{end}}
         >
           <i data-lucide="chevron-left"></i>
         </button>
-        {{else}}
-        <button class="pagination-btn" disabled>
-          <i data-lucide="chevron-left"></i>
-        </button>
-        {{end}} {{if .HasNext}}
+        <span class="page-info">{{.CurrentPage}} / {{.TotalPages}}</span>
         <button
           class="pagination-btn"
+          {{if
+          .HasNext}}
           hx-get="/issues?owner={{$.Owner}}&repo={{$.Repo}}&label={{$.Label}}&state={{$.State}}&page={{add .CurrentPage 1}}&per_page={{.PerPage}}"
           hx-target=".issues-section"
-          hx-swap="outerHTML swap:0.2s settle:0.2s"
-          hx-indicator="#loading"
+          hx-swap="outerHTML swap:0.2s"
+          {{else}}disabled{{end}}
         >
           <i data-lucide="chevron-right"></i>
         </button>
-        {{else}}
-        <button class="pagination-btn" disabled>
-          <i data-lucide="chevron-right"></i>
-        </button>
-        {{end}}
       </div>
       {{end}}
+
       <div class="view-toggle">
-        <button class="view-btn active" data-view="card" onclick="toggleView('card')">
+        <button class="view-btn icon-btn" data-view="card" onclick="toggleView('card')" title="Grid View">
           <i data-lucide="layout-grid"></i>
         </button>
-        <button class="view-btn" data-view="list" onclick="toggleView('list')">
+        <button class="view-btn icon-btn" data-view="list" onclick="toggleView('list')" title="List View">
           <i data-lucide="list"></i>
         </button>
       </div>
@@ -51,134 +45,89 @@
   {{if .Issues}}
   <div id="issues-container" class="issues-grid view-card">
     {{range .Issues}}
-    <div class="issue-item">
-      <div class="issue-votes">
-        <div class="vote-count">{{.Reactions.PlusOne}}</div>
-        <div class="vote-icon">👍</div>
-      </div>
-      <div class="issue-content">
-        <div class="issue-header-row">
-          <a href="{{.HTMLURL}}" target="_blank" class="issue-title">{{.Title}}</a>
-          <span class="issue-number">#{{.Number}}</span>
+    <div class="issue-card" onclick="openIssueModal(this)" data-url="/{{$.Owner}}/{{$.Repo}}/{{.Number}}">
+      <div class="issue-main">
+        <div class="issue-header">
+          <span class="issue-id">#{{.Number}}</span>
+          <span class="issue-date">{{.CreatedAt.Format "Jan 02"}}</span>
         </div>
-        <div class="issue-meta-row">
-          <span class="state-badge state-{{.State}}">{{.State}}</span>
+        <h3 class="issue-title">{{.Title}}</h3>
+        <p class="issue-description">{{if .Body}}{{truncate .Body 100}}{{else}}No description{{end}}</p>
+      </div>
+
+      <div class="issue-footer">
+        <div class="issue-tags">
           {{if .Labels}} {{range .Labels}}
-          <span class="label-tag" style="background-color: #{{.Color}}20; color: #{{.Color}}; border: 1px solid #{{.Color}}50;"
-            >{{.Name}}</span
-          >
+          <span class="tag" style="--tag-color: #{{.Color}}">{{.Name}}</span>
           {{end}} {{end}}
         </div>
-        <div class="issue-description">{{if .Body}}{{truncate .Body 120}}{{else}}<em>No description</em>{{end}}</div>
-        <div class="issue-footer-row">
-          <div class="issue-author">
-            <img src="{{.User.AvatarURL}}" alt="{{.User.Login}}" class="avatar" />
-            <span>{{.User.Login}}</span>
-          </div>
-          <span class="issue-date">{{.CreatedAt.Format "Jan 2, 2006"}}</span>
-          <button
-            class="btn-view-detail"
-            hx-get="/{{$.Owner}}/{{$.Repo}}/{{.Number}}"
-            hx-target="#modal-body"
-            hx-swap="innerHTML"
-            hx-indicator="#modal-loading"
-            onclick="openModal()"
-          >
-            Details
-          </button>
+        <div class="issue-upvotes">
+          <i data-lucide="thumbs-up" class="thumbs-icon"></i>
+          <span>{{.Reactions.PlusOne}}</span>
         </div>
       </div>
     </div>
     {{end}}
   </div>
   {{else}}
-  <div class="no-issues">
-    <p>No issues found with the current filters.</p>
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i data-lucide="inbox"></i>
+    </div>
+    <h3>No issues found</h3>
+    <p>Try adjusting your search criteria</p>
   </div>
   {{end}}
 </div>
 
+<!-- Simplified Modal Structure -->
 <div id="modal" class="modal" onclick="if (event.target === this) closeModal();">
-  <div class="modal-content">
-    <span class="modal-close" onclick="closeModal()">&times;</span>
-    <div id="modal-loading" class="modal-loading htmx-indicator">
-      <div class="spinner"></div>
-    </div>
-    <div id="modal-body"></div>
+  <div class="modal-dialog">
+    <button class="modal-close-btn" onclick="closeModal()">
+      <i data-lucide="x"></i>
+    </button>
+    <div id="modal-content" class="modal-content-body"></div>
   </div>
 </div>
 
 <script>
-  function openModal() {
-    document.getElementById("modal").style.display = "flex";
-    document.body.classList.add("modal-open");
+  function openIssueModal(element) {
+    const url = element.getAttribute("data-url");
+    const modal = document.getElementById("modal");
+    const content = document.getElementById("modal-content");
+
+    modal.classList.add("active");
+    content.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+    htmx.ajax("GET", url, "#modal-content");
   }
 
   function closeModal() {
-    document.getElementById("modal").style.display = "none";
-    document.body.classList.remove("modal-open");
+    document.getElementById("modal").classList.remove("active");
   }
 
   function toggleView(view) {
     const container = document.getElementById("issues-container");
     const buttons = document.querySelectorAll(".view-btn");
 
-    buttons.forEach((btn) => {
-      if (btn.dataset.view === view) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    });
+    buttons.forEach((btn) => btn.classList.toggle("active", btn.dataset.view === view));
 
-    container.className = view === "card" ? "issues-grid view-card" : "issues-list view-list";
+    container.classList.remove("view-card", "view-list");
+    container.classList.add(`view-${view}`);
+
     localStorage.setItem("preferredView", view);
   }
 
-  // Initialize Lucide icons after content loads
-  if (typeof lucide !== "undefined") {
-    lucide.createIcons();
-  }
-
-  // Reinitialize Lucide icons after HTMX swaps (for pagination)
-  document.body.addEventListener("htmx:afterSwap", function (evt) {
-    if (typeof lucide !== "undefined") {
-      lucide.createIcons();
-    }
-  });
-
-  // Fade out issues during pagination loading
-  document.body.addEventListener("htmx:beforeRequest", function (evt) {
-    const issuesContainer = document.getElementById("issues-container");
-    if (issuesContainer && evt.detail.target.classList.contains("issues-section")) {
-      issuesContainer.style.opacity = "0.3";
-      issuesContainer.style.pointerEvents = "none";
-    }
-  });
-
-  // Restore preferred view immediately on load
+  // Initialize state
   (function () {
-    const preferred = localStorage.getItem("preferredView") || "card";
-    const container = document.getElementById("issues-container");
-    const buttons = document.querySelectorAll(".view-btn");
+    const view = localStorage.getItem("preferredView") || "card";
+    toggleView(view);
 
-    if (container) {
-      container.className = preferred === "card" ? "issues-grid view-card" : "issues-list view-list";
-
-      buttons.forEach((btn) => {
-        if (btn.dataset.view === preferred) {
-          btn.classList.add("active");
-        } else {
-          btn.classList.remove("active");
-        }
-      });
-    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
   })();
 
-  // Close modal on Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeModal();
-    }
+  // Re-init icons on swap
+  document.body.addEventListener("htmx:afterSwap", () => {
+    if (typeof lucide !== "undefined") lucide.createIcons();
   });
 </script>

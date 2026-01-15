@@ -5,7 +5,7 @@
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-  color: var(--text);
+  color: var(--text-main);
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
   font-weight: 600;
@@ -14,14 +14,14 @@
 
 .markdown-body h1 {
   font-size: 1.75rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.5rem;
   margin-top: 0;
 }
 
 .markdown-body h2 {
   font-size: 1.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.5rem;
 }
 
@@ -54,21 +54,21 @@
 
 .markdown-body code {
   font-family: "Geist Mono", monospace;
-  background: var(--bg-tertiary);
+  background: var(--bg-hover);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-size: 0.875rem;
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .markdown-body pre {
   font-family: "Geist Mono", monospace;
-  background: var(--bg-tertiary);
+  background: var(--bg-hover);
   padding: 1rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   overflow-x: auto;
   margin-bottom: 1rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
 }
 
 .markdown-body pre code {
@@ -78,17 +78,17 @@
 }
 
 .markdown-body blockquote {
-  border-left: 4px solid var(--border);
+  border-left: 4px solid var(--border-color);
   padding-left: 1rem;
   margin: 1rem 0;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .markdown-body img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   margin: 1rem 0;
 }
 
@@ -100,25 +100,25 @@
 
 .markdown-body table th,
 .markdown-body table td {
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   padding: 0.75rem;
   text-align: left;
 }
 
 .markdown-body table th {
-  background: var(--bg-tertiary);
+  background: var(--bg-hover);
   font-weight: 600;
 }
 
 .markdown-body hr {
   border: none;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-color);
   margin: 1.5rem 0;
 }
 
 .markdown-body strong {
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .markdown-body em {

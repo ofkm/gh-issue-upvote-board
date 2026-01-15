@@ -5,26 +5,37 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 // Config holds application configuration
 type Config struct {
-	Owner       string
-	Repo        string
-	Label       string
-	State       string
-	GitHubToken string
-	Port        string
+	Owner          string
+	Repo           string
+	Label          string
+	State          string
+	GitHubToken    string
+	Port           string
+	SiteTitle      string
+	PrimaryColor   string
+	SecondaryColor string
 }
 
 // Load loads configuration from environment variables or defaults
 func Load() (*Config, error) {
+	// Load .env file if it exists
+	_ = godotenv.Load()
+
 	config := &Config{
-		Owner: getEnv("GITHUB_OWNER", "getarcaneapp"),
-		Repo:  getEnv("GITHUB_REPO", "arcane"),
-		Label: getEnv("GITHUB_LABEL", "needs more upvotes"),
-		State: getEnv("GITHUB_STATE", "open"),
-		Port:  getEnv("PORT", "8080"),
+		Owner:          getEnv("GITHUB_OWNER", "getarcaneapp"),
+		Repo:           getEnv("GITHUB_REPO", "arcane"),
+		Label:          getEnv("GITHUB_LABEL", "needs more upvotes"),
+		State:          getEnv("GITHUB_STATE", "open"),
+		Port:           getEnv("PORT", "8080"),
+		SiteTitle:      getEnv("SITE_TITLE", "Issue Board"),
+		PrimaryColor:   getEnv("PRIMARY_COLOR", "#2563eb"),
+		SecondaryColor: getEnv("SECONDARY_COLOR", "#64748b"),
 	}
 
 	// Try to get token from environment first
