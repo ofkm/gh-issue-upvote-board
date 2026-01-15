@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Issue Upvote Board</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/markdown-styles.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1>GitHub Issue Upvote Board</h1>
+                    <p class="subtitle">Track the most requested features</p>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <i class="sun-icon" data-lucide="sun"></i>
+                    <i class="moon-icon" data-lucide="moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="config-section">
+            <div class="config-info">
+                <a href="{{.Config.RepoURL}}" target="_blank" class="repo-link">
+                    {{.Config.Owner}}/{{.Config.Repo}}
+                </a>
+                {{if .Config.Label}}
+                <span class="label-badge">{{.Config.Label}}</span>
+                {{end}}
+                <span class="state-badge state-{{.Config.State}}">{{.Config.State}}</span>
+            </div>
+
+            <div class="filter-section">
+                <form id="filter-form" class="filter-form">
+                    <input type="text" id="owner" name="owner" value="{{.Config.Owner}}" placeholder="owner">
+                    <input type="text" id="repo" name="repo" value="{{.Config.Repo}}" placeholder="repo">
+                    <input type="text" id="label" name="label" value="{{.Config.Label}}" placeholder="label">
+                    <select id="state" name="state">
+                        <option value="open" {{if eq .Config.State "open"}}selected{{end}}>Open</option>
+                        <option value="closed" {{if eq .Config.State "closed"}}selected{{end}}>Closed</option>
+                        <option value="all" {{if eq .Config.State "all"}}selected{{end}}>All</option>
+                    </select>
+                    <button 
+                        type="button"
+                        class="btn-primary"
+                        hx-get="/issues"
+                        hx-target="#issue-container"
+                        hx-include="#filter-form"
+                        hx-indicator="#loading">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="loading" class="loading htmx-indicator">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="issue-container" 
+             hx-get="/issues" 
+             hx-trigger="load"
+             hx-indicator="#loading">
+        </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+        
+        // Initialize theme from localStorage or system preference
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</body>
+</html>

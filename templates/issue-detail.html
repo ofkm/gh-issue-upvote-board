@@ -1,0 +1,50 @@
+<div class="issue-detail">
+  <div class="detail-header">
+    <div class="detail-title-row">
+      <h2>{{.Issue.Title}}</h2>
+      <span class="issue-number-large">#{{.Issue.Number}}</span>
+    </div>
+    <div class="detail-meta">
+      <span class="state-badge state-{{.Issue.State}}">{{.Issue.State}}</span>
+      <div class="detail-author">
+        <img src="{{.Issue.User.AvatarURL}}" alt="{{.Issue.User.Login}}" class="avatar" />
+        <a href="{{.Issue.User.HTMLURL}}" target="_blank">{{.Issue.User.Login}}</a>
+      </div>
+      <span class="detail-date">{{.Issue.CreatedAt.Format "Jan 2, 2006"}}</span>
+    </div>
+  </div>
+
+  <div class="detail-stats">
+    <div class="stat-item">
+      <span class="stat-value">{{.Issue.Reactions.PlusOne}}</span>
+      <span class="stat-label">👍 Upvotes</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">{{.Issue.Reactions.Total}}</span>
+      <span class="stat-label">Total Reactions</span>
+    </div>
+  </div>
+
+  {{if .Issue.Labels}}
+  <div class="detail-labels">
+    {{range .Issue.Labels}}
+    <span class="label-tag" style="background-color: #{{.Color}}20; color: #{{.Color}}; border: 1px solid #{{.Color}}50;"
+      >{{.Name}}</span
+    >
+    {{end}}
+  </div>
+  {{end}}
+
+  <div class="detail-body">
+    {{if .Issue.Body}}
+    <div class="markdown-body">{{markdown .Issue.Body}}</div>
+    {{else}}
+    <p class="no-description">No description provided</p>
+    {{end}}
+  </div>
+
+  <div class="detail-actions">
+    <a href="{{.Issue.HTMLURL}}" target="_blank" class="btn-primary">View on GitHub</a>
+    <a href="{{.Issue.HTMLURL}}#issue-comment-box" target="_blank" class="btn-secondary">Comment</a>
+  </div>
+</div>
