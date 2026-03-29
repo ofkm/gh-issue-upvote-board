@@ -43,23 +43,51 @@
                 <input type="hidden" id="active-owner" name="owner" value="{{.Config.Owner}}">
                 <input type="hidden" id="active-repo" name="repo" value="{{.Config.Repo}}">
                 <input type="hidden" id="active-label" name="label" value="{{.Config.Label}}">
+                <input type="hidden" id="active-milestone-only" name="milestone_only" value="false">
+                <input type="hidden" id="active-pr-only" name="pr_only" value="false">
                 
-                <div class="filter-group">
-                    <select id="state" name="state" 
-                            hx-get="/issues" 
-                            hx-target="#issue-container" 
-                            hx-include="#filter-form" 
-                            hx-indicator="#loading">
-                        <option value="open" {{if eq .Config.State "open"}}selected{{end}}>Open Issues</option>
-                        <option value="closed" {{if eq .Config.State "closed"}}selected{{end}}>Closed Issues</option>
-                        <option value="all" {{if eq .Config.State "all"}}selected{{end}}>All Issues</option>
-                    </select>
+                <div class="filter-shell">
+                    <div class="quick-filters" aria-label="Quick issue filters">
+                        <button type="button" class="filter-chip" data-label-filter="" onclick="setLabelFilter('')">
+                            <i data-lucide="layers-3"></i>
+                            <span>All</span>
+                        </button>
+                        <button type="button" class="filter-chip" data-label-filter="feature" onclick="setLabelFilter('feature')">
+                            <i data-lucide="sparkles"></i>
+                            <span>Feature</span>
+                        </button>
+                        <button type="button" class="filter-chip" data-label-filter="bug" onclick="setLabelFilter('bug')">
+                            <i data-lucide="bug"></i>
+                            <span>Bug</span>
+                        </button>
+                        <button type="button" class="filter-chip filter-chip-toggle" data-toggle-filter="milestone" onclick="toggleQuickFilter('milestone')">
+                            <i data-lucide="flag"></i>
+                            <span>Milestone</span>
+                        </button>
+                        <button type="button" class="filter-chip filter-chip-toggle" data-toggle-filter="pr" onclick="toggleQuickFilter('pr')">
+                            <i data-lucide="git-pull-request"></i>
+                            <span>Open PR</span>
+                        </button>
+                    </div>
+
+                    <div class="filter-group filter-group-state">
+                        <select id="state" name="state" 
+                                hx-get="/issues" 
+                                hx-target="#issue-container" 
+                                hx-include="#filter-form" 
+                                hx-indicator="#loading">
+                            <option value="open" {{if eq .Config.State "open"}}selected{{end}}>Open Issues</option>
+                            <option value="closed" {{if eq .Config.State "closed"}}selected{{end}}>Closed Issues</option>
+                            <option value="all" {{if eq .Config.State "all"}}selected{{end}}>All Issues</option>
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
 
         <div id="loading" class="loading htmx-indicator">
             <div class="spinner"></div>
+            <span>Loading issues...</span>
         </div>
 
         <div id="issue-container" 
@@ -87,8 +115,8 @@
                 </div>
                 <div class="form-group">
                     <label for="setting-label">Filter Label</label>
-                    <input type="text" id="setting-label" class="form-control" placeholder="e.g. feature-request">
-                    <small class="form-hint">Leave empty to show all issues</small>
+                    <input type="text" id="setting-label" class="form-control" placeholder="e.g. feature, bug, enhancement">
+                    <small class="form-hint">Quick filters can override this with glassy enthusiasm</small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -132,10 +160,45 @@
             document.getElementById('active-label').value = document.getElementById('setting-label').value;
             
             closeSettings();
+            syncQuickFilters();
             
             // Trigger refresh
+            refreshIssues();
+        }
+
+        function refreshIssues() {
             const stateSelect = document.getElementById('state');
             htmx.trigger(stateSelect, 'change');
+        }
+
+        function setLabelFilter(label) {
+            document.getElementById('active-label').value = label;
+            syncQuickFilters();
+            refreshIssues();
+        }
+
+        function toggleQuickFilter(filterName) {
+            const input = document.getElementById(`active-${filterName}-only`);
+            input.value = input.value === 'true' ? 'false' : 'true';
+            syncQuickFilters();
+            refreshIssues();
+        }
+
+        function syncQuickFilters() {
+            const activeLabel = document.getElementById('active-label').value.trim().toLowerCase();
+            const milestoneOnly = document.getElementById('active-milestone-only').value === 'true';
+            const prOnly = document.getElementById('active-pr-only').value === 'true';
+
+            document.querySelectorAll('[data-label-filter]').forEach((button) => {
+                const buttonLabel = button.dataset.labelFilter.trim().toLowerCase();
+                const isAll = buttonLabel === '';
+                button.classList.toggle('active', isAll ? activeLabel === '' : activeLabel === buttonLabel);
+            });
+
+            const milestoneButton = document.querySelector('[data-toggle-filter="milestone"]');
+            const prButton = document.querySelector('[data-toggle-filter="pr"]');
+            if (milestoneButton) milestoneButton.classList.toggle('active', milestoneOnly);
+            if (prButton) prButton.classList.toggle('active', prOnly);
         }
         
         // Initialize theme from localStorage or system preference
@@ -146,6 +209,8 @@
             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
+
+            syncQuickFilters();
         })();
     </script>
 </body>

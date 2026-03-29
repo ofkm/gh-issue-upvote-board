@@ -27,7 +27,7 @@ The application can be configured using environment variables:
 | -------------- | ----------------------------- | --------------------------- |
 | `GITHUB_OWNER` | Repository owner              | `getarcaneapp`              |
 | `GITHUB_REPO`  | Repository name               | `arcane`                    |
-| `GITHUB_LABEL` | Filter by label               | `needs more upvotes`        |
+| `GITHUB_LABEL` | Filter by label               | `feature`                   |
 | `GITHUB_STATE` | Issue state (open/closed/all) | `open`                      |
 | `GITHUB_TOKEN` | GitHub Personal Access Token  | (auto-detected from gh CLI) |
 | `PORT`         | Server port                   | `8080`                      |
@@ -61,7 +61,7 @@ export GITHUB_TOKEN=your_token_here
 ./issue-upvote-board
 ```
 
-Then open http://localhost:8080 in your browser.
+Then open http://localhost:8080 in your browser. By default, the board shows **open issues labeled `feature`**.
 
 ### Run with custom configuration
 

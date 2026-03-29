@@ -9,9 +9,10 @@
           class="pagination-btn"
           {{if
           .HasPrev}}
-          hx-get="/issues?owner={{$.Owner}}&repo={{$.Repo}}&label={{$.Label}}&state={{$.State}}&page={{sub .CurrentPage 1}}&per_page={{.PerPage}}"
+          hx-get="/issues?owner={{$.Owner}}&repo={{$.Repo}}&label={{$.Label}}&state={{$.State}}&milestone_only={{$.MilestoneOnly}}&pr_only={{$.PROnly}}&page={{sub .CurrentPage 1}}&per_page={{.PerPage}}"
           hx-target=".issues-section"
-          hx-swap="outerHTML swap:0.2s"
+          hx-indicator="#loading"
+          hx-swap="outerHTML swap:0.4s settle:0.4s"
           {{else}}disabled{{end}}
         >
           <i data-lucide="chevron-left"></i>
@@ -21,9 +22,10 @@
           class="pagination-btn"
           {{if
           .HasNext}}
-          hx-get="/issues?owner={{$.Owner}}&repo={{$.Repo}}&label={{$.Label}}&state={{$.State}}&page={{add .CurrentPage 1}}&per_page={{.PerPage}}"
+          hx-get="/issues?owner={{$.Owner}}&repo={{$.Repo}}&label={{$.Label}}&state={{$.State}}&milestone_only={{$.MilestoneOnly}}&pr_only={{$.PROnly}}&page={{add .CurrentPage 1}}&per_page={{.PerPage}}"
           hx-target=".issues-section"
-          hx-swap="outerHTML swap:0.2s"
+          hx-indicator="#loading"
+          hx-swap="outerHTML swap:0.4s settle:0.4s"
           {{else}}disabled{{end}}
         >
           <i data-lucide="chevron-right"></i>
@@ -52,6 +54,21 @@
           <span class="issue-date">{{.CreatedAt.Format "Jan 02"}}</span>
         </div>
         <h3 class="issue-title">{{.Title}}</h3>
+        {{if or .Milestone .OpenPRs}}
+        <div class="issue-signals">
+          {{if .Milestone}}
+          <span class="status-chip status-chip-milestone">
+            <i data-lucide="flag"></i>
+            <span>{{.Milestone.Title}}</span>
+          </span>
+          {{end}} {{if .OpenPRs}}
+          <span class="status-chip status-chip-pr">
+            <i data-lucide="git-pull-request"></i>
+            <span>{{len .OpenPRs}} open PR{{if ne (len .OpenPRs) 1}}s{{end}}</span>
+          </span>
+          {{end}}
+        </div>
+        {{end}}
         <p class="issue-description">{{if .Body}}{{truncate .Body 100}}{{else}}No description{{end}}</p>
       </div>
 
@@ -92,42 +109,42 @@
 
 <script>
   function openIssueModal(element) {
-    const url = element.getAttribute("data-url");
-    const modal = document.getElementById("modal");
-    const content = document.getElementById("modal-content");
+    const url = element.getAttribute('data-url');
+    const modal = document.getElementById('modal');
+    const content = document.getElementById('modal-content');
 
-    modal.classList.add("active");
+    modal.classList.add('active');
     content.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
 
-    htmx.ajax("GET", url, "#modal-content");
+    htmx.ajax('GET', url, '#modal-content');
   }
 
   function closeModal() {
-    document.getElementById("modal").classList.remove("active");
+    document.getElementById('modal').classList.remove('active');
   }
 
   function toggleView(view) {
-    const container = document.getElementById("issues-container");
-    const buttons = document.querySelectorAll(".view-btn");
+    const container = document.getElementById('issues-container');
+    const buttons = document.querySelectorAll('.view-btn');
 
-    buttons.forEach((btn) => btn.classList.toggle("active", btn.dataset.view === view));
+    buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.view === view));
 
-    container.classList.remove("view-card", "view-list");
+    container.classList.remove('view-card', 'view-list');
     container.classList.add(`view-${view}`);
 
-    localStorage.setItem("preferredView", view);
+    localStorage.setItem('preferredView', view);
   }
 
   // Initialize state
   (function () {
-    const view = localStorage.getItem("preferredView") || "card";
+    const view = localStorage.getItem('preferredView') || 'card';
     toggleView(view);
 
-    if (typeof lucide !== "undefined") lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   })();
 
   // Re-init icons on swap
-  document.body.addEventListener("htmx:afterSwap", () => {
-    if (typeof lucide !== "undefined") lucide.createIcons();
+  document.body.addEventListener('htmx:afterSwap', () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   });
 </script>

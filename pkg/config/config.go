@@ -30,7 +30,7 @@ func Load() (*Config, error) {
 	config := &Config{
 		Owner:          getEnv("GITHUB_OWNER", "getarcaneapp"),
 		Repo:           getEnv("GITHUB_REPO", "arcane"),
-		Label:          getEnv("GITHUB_LABEL", "needs more upvotes"),
+		Label:          getEnv("GITHUB_LABEL", "feature"),
 		State:          getEnv("GITHUB_STATE", "open"),
 		Port:           getEnv("PORT", "8080"),
 		SiteTitle:      getEnv("SITE_TITLE", "Issue Board"),

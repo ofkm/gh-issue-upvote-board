@@ -16,6 +16,32 @@
         {{.Issue.State}}
       </div>
     </div>
+
+    {{if or .Issue.Milestone .Issue.OpenPRs}}
+    <div class="detail-status-grid">
+      {{if .Issue.Milestone}}
+      <a href="{{.Issue.Milestone.HTMLURL}}" target="_blank" class="detail-status-card">
+        <span class="detail-status-label">Milestone</span>
+        <span class="detail-status-value">
+          <i data-lucide="flag"></i>
+          {{.Issue.Milestone.Title}}
+        </span>
+      </a>
+      {{end}} {{if .Issue.OpenPRs}}
+      <div class="detail-status-card">
+        <span class="detail-status-label">Open pull requests</span>
+        <div class="detail-pr-list">
+          {{range .Issue.OpenPRs}}
+          <a href="{{.HTMLURL}}" target="_blank" class="detail-pr-link">
+            <i data-lucide="git-pull-request"></i>
+            <span>#{{.Number}} {{.Title}}</span>
+          </a>
+          {{end}}
+        </div>
+      </div>
+      {{end}}
+    </div>
+    {{end}}
   </div>
 
   <div class="detail-content markdown-body">

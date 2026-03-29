@@ -45,7 +45,7 @@ func New(cfg *config.Config, client *github.Client, templatesFS embed.FS) (*Hand
 
 // Home renders the main page
 func (h *Handler) Home(w http.ResponseWriter, r *http.Request) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"Config": h.config,
 	}
 
@@ -60,10 +60,22 @@ func (h *Handler) IssueList(w http.ResponseWriter, r *http.Request) {
 	// Get query parameters for dynamic filtering
 	owner := r.URL.Query().Get("owner")
 	repo := r.URL.Query().Get("repo")
-	label := r.URL.Query().Get("label")
-	state := r.URL.Query().Get("state")
+	label, hasLabel := r.URL.Query()["label"]
+	state, hasState := r.URL.Query()["state"]
+	milestoneOnly := r.URL.Query().Get("milestone_only") == "true"
+	prOnly := r.URL.Query().Get("pr_only") == "true"
 	pageStr := r.URL.Query().Get("page")
 	perPageStr := r.URL.Query().Get("per_page")
+
+	resolvedLabel := ""
+	if len(label) > 0 {
+		resolvedLabel = label[0]
+	}
+
+	resolvedState := ""
+	if len(state) > 0 {
+		resolvedState = state[0]
+	}
 
 	// Use config defaults if not provided
 	if owner == "" {
@@ -72,11 +84,11 @@ func (h *Handler) IssueList(w http.ResponseWriter, r *http.Request) {
 	if repo == "" {
 		repo = h.config.Repo
 	}
-	if label == "" {
-		label = h.config.Label
+	if !hasLabel {
+		resolvedLabel = h.config.Label
 	}
-	if state == "" {
-		state = h.config.State
+	if !hasState || resolvedState == "" {
+		resolvedState = h.config.State
 	}
 
 	// Parse pagination parameters
@@ -94,25 +106,27 @@ func (h *Handler) IssueList(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	paginatedIssues, err := h.client.FetchIssues(owner, repo, label, state, page, perPage)
+	paginatedIssues, err := h.client.FetchIssues(owner, repo, resolvedLabel, resolvedState, milestoneOnly, prOnly, page, perPage)
 	if err != nil {
 		log.Printf("Error fetching issues: %v", err)
 		http.Error(w, fmt.Sprintf("Error fetching issues: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	data := map[string]interface{}{
-		"Issues":      paginatedIssues.Issues,
-		"Owner":       owner,
-		"Repo":        repo,
-		"Label":       label,
-		"State":       state,
-		"CurrentPage": paginatedIssues.CurrentPage,
-		"TotalPages":  paginatedIssues.TotalPages,
-		"TotalCount":  paginatedIssues.TotalCount,
-		"PerPage":     paginatedIssues.PerPage,
-		"HasNext":     paginatedIssues.HasNext,
-		"HasPrev":     paginatedIssues.HasPrev,
+	data := map[string]any{
+		"Issues":        paginatedIssues.Issues,
+		"Owner":         owner,
+		"Repo":          repo,
+		"Label":         resolvedLabel,
+		"State":         resolvedState,
+		"MilestoneOnly": milestoneOnly,
+		"PROnly":        prOnly,
+		"CurrentPage":   paginatedIssues.CurrentPage,
+		"TotalPages":    paginatedIssues.TotalPages,
+		"TotalCount":    paginatedIssues.TotalCount,
+		"PerPage":       paginatedIssues.PerPage,
+		"HasNext":       paginatedIssues.HasNext,
+		"HasPrev":       paginatedIssues.HasPrev,
 	}
 
 	if err := h.templates.ExecuteTemplate(w, "issue-list.html", data); err != nil {
@@ -147,7 +161,7 @@ func (h *Handler) IssueDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"Issue": issue,
 		"Owner": owner,
 		"Repo":  repo,
